@@ -1,6 +1,6 @@
 # Web Eq
 
-## Multi-band audio equalizer for the web
+## Multi-band audio equalizer for the web.
 
 ![1](1.png)
 ![2](2.png)
