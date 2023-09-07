@@ -198,7 +198,7 @@ export const Controls = (): JSX.Element => {
                 Web EQ
             </p>
             <p className="text-2xl mb-8 text-center text-slate-500 font-semibold select-none">
-                Multiband equalizer for the Web
+                Multiband audio equalizer for the Web
             </p>
             <div className="w-max">
                 <div className="flex justify-between mb-2 w-full">
