@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import ClickAwayListener from "react-click-away-listener";
 import { IoMdArrowDropdown } from "react-icons/io";
 import { twMerge } from "tailwind-merge";

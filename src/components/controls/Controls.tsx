@@ -346,7 +346,6 @@ export const Controls = (): JSX.Element => {
                     <AudioPlayer
                         theme={theme}
                         ref={audioPlayerRef}
-                        title={"Song Title"}
                         path={audioPath}
                         key={audioPath}
                     />

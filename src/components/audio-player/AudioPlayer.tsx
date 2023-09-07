@@ -24,12 +24,11 @@ const convertSecondsToMinutes = (seconds: number): string => {
 
 interface AudioPlayerProps {
     path: string | undefined;
-    title: string;
     theme: EqualizerTheme;
 }
 
 export const AudioPlayer = forwardRef(
-    ({ path, title, theme }: AudioPlayerProps, ref): JSX.Element => {
+    ({ path, theme }: AudioPlayerProps, ref): JSX.Element => {
         useImperativeHandle(ref, () => ({
             play: () => {
                 handlePlay();
