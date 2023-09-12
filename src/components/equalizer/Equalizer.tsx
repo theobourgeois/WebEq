@@ -1,11 +1,5 @@
 import * as React from "react";
-import {
-    forwardRef,
-    useEffect,
-    useImperativeHandle,
-    useRef,
-    useState,
-} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useRef, useState} from "react";
 import {
     DEFAULT_CURVE,
     EQUALIZER_DIMENSIONS,
@@ -16,10 +10,10 @@ import {
     POINT_RADIUS,
     THEME_MAP,
 } from "../../utils/constants";
-import { RxCross2 } from "react-icons/rx";
-import { getNewID } from "../../utils/util-functions";
-import { twMerge } from "tailwind-merge";
-import { audioContext } from "../../utils/globals";
+import {RxCross2} from "react-icons/rx";
+import {getNewID} from "../../utils/util-functions";
+import {twMerge} from "tailwind-merge";
+import {audioContext} from "../../utils/globals";
 
 export type EqualizerPoint = {
     frequency: number;
@@ -50,12 +44,12 @@ export enum EqualizerTheme {
 const MAX_SCROLL = 200;
 
 function getYFromGain(gain: number) {
-    const { height } = EQUALIZER_DIMENSIONS;
+    const {height} = EQUALIZER_DIMENSIONS;
     return ((gain - MIN_GAIN) / (MAX_GAIN - MIN_GAIN)) * height;
 }
 
 function getXfromFrequency(frequency: number) {
-    const { width } = EQUALIZER_DIMENSIONS;
+    const {width} = EQUALIZER_DIMENSIONS;
     const normalizedFrequency =
         Math.log(frequency / MIN_FREQUENCY) /
         Math.log(MAX_FREQUENCY / MIN_FREQUENCY);
@@ -70,7 +64,7 @@ function getGainFromY(y: number) {
 }
 
 function getFrequencyFromX(x: number) {
-    const { width } = EQUALIZER_DIMENSIONS;
+    const {width} = EQUALIZER_DIMENSIONS;
     const minFrequency = 20;
     const maxFrequency = 20000;
     const normalizedX = x / width;
@@ -80,13 +74,13 @@ function getFrequencyFromX(x: number) {
 function getDimensionsFromFrequencyAndGain(frequency: number, gain: number) {
     const x = getXfromFrequency(frequency);
     const y = getYFromGain(gain);
-    return { x, y };
+    return {x, y};
 }
 
 function getFrequencyAndGainFromDimensions(x: number, y: number) {
     const frequency = getFrequencyFromX(x);
     const gain = getGainFromY(y);
-    return { frequency, gain };
+    return {frequency, gain};
 }
 
 const getClosestPoint = (
@@ -95,9 +89,9 @@ const getClosestPoint = (
     points: EqualizerPoint[],
     threshold = 0
 ) => {
-    const { height } = EQUALIZER_DIMENSIONS;
-    const { x, y } = getDimensionsFromFrequencyAndGain(frequency, gain);
-    const closestPoint = points.find((p) => {
+    const {height} = EQUALIZER_DIMENSIONS;
+    const {x, y} = getDimensionsFromFrequencyAndGain(frequency, gain);
+    return points.find((p) => {
         const comparePoint = getDimensionsFromFrequencyAndGain(
             p.frequency,
             p.gain
@@ -109,7 +103,6 @@ const getClosestPoint = (
             y - POINT_RADIUS - threshold < height - comparePoint.y
         );
     });
-    return closestPoint;
 };
 
 interface EqualizerProps {
@@ -215,7 +208,7 @@ export const Equalizer = forwardRef(
             const canvas = canvasRef.current;
             const context = canvas?.getContext("2d");
             if (!context) return;
-            const { width, height } = EQUALIZER_DIMENSIONS;
+            const {width, height} = EQUALIZER_DIMENSIONS;
             context.strokeStyle = "rgba(200, 200, 200, 0.2)";
             context.lineWidth = 2;
 
@@ -273,7 +266,7 @@ export const Equalizer = forwardRef(
             const canvas = canvasRef.current;
             const context = canvas?.getContext("2d");
             if (!context) return;
-            const { width, height } = EQUALIZER_DIMENSIONS;
+            const {width, height} = EQUALIZER_DIMENSIONS;
 
             context.clearRect(0, 0, width, height);
             context.strokeStyle = "white";
@@ -284,25 +277,26 @@ export const Equalizer = forwardRef(
             for (let i = 1; i < width; i++) {
                 let y = height / 2;
 
-                for (let point of points) {
-                    const { x: pointX, y: pointY } =
+                for (const point of points) {
+                    const {x: pointX, y: pointY} =
                         getDimensionsFromFrequencyAndGain(
                             point.frequency,
                             point.gain
                         );
 
                     switch (point.type) {
-                        case EqualizerType.PEAKING:
-                            let dx = Math.abs(i - pointX);
-                            let influence = Math.exp(
+                        case EqualizerType.PEAKING: {
+                            const dx = Math.abs(i - pointX);
+                            const influence = Math.exp(
                                 (-dx * dx) / (2 * point.curve * point.curve)
                             );
                             y += influence * (height - pointY - height / 2);
+                        }
                             break;
                         case EqualizerType.LOW_PASS:
                             if (i <= pointX) {
-                                let dx = Math.abs(i - pointX);
-                                let influence = Math.exp(
+                                const dx = Math.abs(i - pointX);
+                                const influence = Math.exp(
                                     (-dx * dx) / (2 * point.curve * point.curve)
                                 );
                                 y += influence * (height - pointY - height / 2);
@@ -310,8 +304,8 @@ export const Equalizer = forwardRef(
                             break;
                         case EqualizerType.HIGH_PASS:
                             if (i >= pointX) {
-                                let dx = Math.abs(i - pointX);
-                                let influence = Math.exp(
+                                const dx = Math.abs(i - pointX);
+                                const influence = Math.exp(
                                     (-dx * dx) / (2 * point.curve * point.curve)
                                 );
                                 y += influence * (height - pointY - height / 2);
@@ -339,11 +333,11 @@ export const Equalizer = forwardRef(
         const renderPoints = () => {
             const canvas = canvasRef.current;
             const context = canvas?.getContext("2d");
-            const { height } = EQUALIZER_DIMENSIONS;
+            const {height} = EQUALIZER_DIMENSIONS;
             if (!context) return;
             context.lineWidth = 4;
-            for (let point of points) {
-                const { x, y } = getDimensionsFromFrequencyAndGain(
+            for (const point of points) {
+                const {x, y} = getDimensionsFromFrequencyAndGain(
                     point.frequency,
                     point.gain
                 );
@@ -368,7 +362,7 @@ export const Equalizer = forwardRef(
                 const rect = canvasRef.current.getBoundingClientRect();
                 const x = Math.max(e.pageX - rect.left, -20);
                 const y = EQUALIZER_DIMENSIONS.height - (e.pageY - rect.top);
-                let { frequency, gain } = getFrequencyAndGainFromDimensions(
+                let {frequency, gain} = getFrequencyAndGainFromDimensions(
                     x,
                     y
                 );
@@ -377,7 +371,7 @@ export const Equalizer = forwardRef(
                     MAX_FREQUENCY
                 );
                 gain = Math.min(Math.max(gain, MIN_GAIN), MAX_GAIN);
-                let type = currentEqualizerType ?? EqualizerType.PEAKING;
+                const type = currentEqualizerType ?? EqualizerType.PEAKING;
                 const newPoint = {
                     frequency,
                     gain: type === EqualizerType.PEAKING ? gain : MIN_GAIN,
@@ -405,17 +399,16 @@ export const Equalizer = forwardRef(
 
             const handleScroll = (e: WheelEvent) => {
                 e.preventDefault();
-                const { deltaY } = e;
+                const {deltaY} = e;
                 const scrollEffect = deltaY / 10;
-                const newCurveValue = Math.min(
+                currentPoint.curve = Math.min(
                     Math.max(currentPoint.curve - scrollEffect, 1),
                     MAX_SCROLL
                 );
-                currentPoint.curve = newCurveValue;
             };
 
-            const { offsetX, offsetY } = e.nativeEvent;
-            const { frequency, gain } = getFrequencyAndGainFromDimensions(
+            const {offsetX, offsetY} = e.nativeEvent;
+            const {frequency, gain} = getFrequencyAndGainFromDimensions(
                 offsetX,
                 offsetY
             );
@@ -455,10 +448,10 @@ export const Equalizer = forwardRef(
         };
 
         const handleScroll = (e: React.WheelEvent) => {
-            const { offsetY, offsetX } = e.nativeEvent;
-            const { deltaY } = e;
+            const {offsetY, offsetX} = e.nativeEvent;
+            const {deltaY} = e;
             const scrollEffect = deltaY / 10;
-            const { frequency, gain } = getFrequencyAndGainFromDimensions(
+            const {frequency, gain} = getFrequencyAndGainFromDimensions(
                 offsetX,
                 offsetY
             );
@@ -480,10 +473,10 @@ export const Equalizer = forwardRef(
         const handleRightClick = (e: React.MouseEvent) => {
             e.preventDefault();
             e.stopPropagation();
-            const { offsetX, offsetY } = e.nativeEvent;
-            const { height } = EQUALIZER_DIMENSIONS;
+            const {offsetX, offsetY} = e.nativeEvent;
+            const {height} = EQUALIZER_DIMENSIONS;
             const selectedPoint = points.find((point) => {
-                const { x, y } = getDimensionsFromFrequencyAndGain(
+                const {x, y} = getDimensionsFromFrequencyAndGain(
                     point.frequency,
                     point.gain
                 );
@@ -494,17 +487,17 @@ export const Equalizer = forwardRef(
                     offsetY - POINT_RADIUS < height - y
                 );
             });
-            const { x, y } = getDimensionsFromFrequencyAndGain(
+            const {x, y} = getDimensionsFromFrequencyAndGain(
                 selectedPoint?.frequency ?? 0,
                 selectedPoint?.gain ?? 0
             );
             setPointTag(
                 selectedPoint
                     ? {
-                          ...selectedPoint,
-                          y: height - y,
-                          x,
-                      }
+                        ...selectedPoint,
+                        y: height - y,
+                        x,
+                    }
                     : null
             );
         };
